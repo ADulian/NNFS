@@ -59,7 +59,7 @@ class CategoricalCrossEntropy(Loss):
         # Normalize gradient
         self.dinputs = self.dinputs / samples
 
-class Softmax_CategoricalCrossentropy():
+class Softmax_CategoricalCrossentropy(Loss):
     def __init__(self):
         self.activation = SoftMax()
         self.loss = CategoricalCrossEntropy()
