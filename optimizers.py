@@ -97,7 +97,7 @@ class RMSProp:
         self.iterations += 1
 
 class Adam:
-    def __init__(self, learning_rate=1.0, decay=0., epsilon=1e-7, beta_1=0.9, beta_2=0.999):
+    def __init__(self, learning_rate=0.001, decay=0., epsilon=1e-7, beta_1=0.9, beta_2=0.999):
         self.learning_rate = learning_rate
         self.current_learning_rate = learning_rate
         self.decay = decay
