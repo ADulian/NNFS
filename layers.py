@@ -8,7 +8,7 @@ class Dense:
                  weight_regularizer_l1=0, weight_regularizer_l2=0,
                  bias_regularizer_l1=0, bias_regularizer_l2=0):
         # Initialize weights and biases
-        self.weights = 0.01 * np.random.randn(n_inputs,n_neurons)
+        self.weights = 0.1 * np.random.randn(n_inputs,n_neurons)
         self.biases = np.zeros((1,n_neurons))
 
         self.weight_regularizer_l1 = weight_regularizer_l1
