@@ -9,15 +9,26 @@ class Model:
     def add(self, layer):
         self.layers.append(layer)
 
-    def set(self, *, loss, optimizer):
+    def set(self, *, loss, optimizer, accuracy):
         self.loss = loss
         self.optimizer = optimizer
+        self.accuracy = accuracy
 
     def train(self, X, y, *, epochs=1, print_every=1):
+
+        self.accuracy.init(y)
 
         for epoch in range(1, epochs+1):
             # Forward pass
             output = self.forward(X)
+
+            # Loss
+            data_loss, regularization_loss = self.loss.calculate(output, y)
+            loss = data_loss + regularization_loss
+
+            # Get predictions and calculate an accuracy
+            predictions = self.output_layer_activation.predictions(output)
+            accuracy = self.accuracy.calculate(predictions, y)
 
             # Temp
             print(output)
@@ -29,6 +40,9 @@ class Model:
 
         # Count num layers
         layer_count = len(self.layers)
+
+        # Trainable layers
+        self.trainable_layers = []
 
         # Iterate the objects
         for i in range(layer_count):
@@ -44,9 +58,17 @@ class Model:
                 self.layers[i].next = self.layers[i + 1]
 
             # Last layer's next object is the loss
-        else:
-            self.layers[i].prev = self.layers[i - 1]
-            self.layers[i].next = self.loss
+            else:
+                self.layers[i].prev = self.layers[i - 1]
+                self.layers[i].next = self.loss
+                self.output_layer_activation = self.layers[i]
+
+            # If layer contains an attribute called "weights" it is a trainable layer
+            if hasattr(self.layers[i], 'weights'):
+                self.trainable_layers.append(self.layers[i])
+
+        # Update loss object with trainable layers
+        self.loss.remember_trainable_layers(self.trainable_layers)
 
     def forward(self, X):
 
