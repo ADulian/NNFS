@@ -1,8 +1,6 @@
 import numpy as np
 import nnfs
 
-nnfs.init()
-
 class Dense:
     def __init__(self, n_inputs, n_neurons,
                  weight_regularizer_l1=0, weight_regularizer_l2=0,
@@ -61,3 +59,7 @@ class Dropout:
 
     def backward(self, dvalues):
         self.dinputs = dvalues * self.binary_mask
+
+class Input:
+    def forward(self, inputs):
+        self.output = inputs
