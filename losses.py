@@ -2,9 +2,12 @@ import numpy as np
 from activations import SoftMax
 
 class Loss:
-    def calculate(self, output, y):
+    def calculate(self, output, y, *, include_regularization=False):
         sample_losses = self.forward(output, y)
         data_loss = np.mean(sample_losses)
+
+        if not include_regularization:
+            return data_loss
 
         return data_loss, self.regularization_loss()
 
