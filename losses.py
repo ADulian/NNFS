@@ -67,19 +67,19 @@ class CategoricalCrossEntropy(Loss):
         self.dinputs = self.dinputs / samples
 
 class Softmax_CategoricalCrossentropy(Loss):
-    def __init__(self):
-        self.activation = SoftMax()
-        self.loss = CategoricalCrossEntropy()
-
-    def forward(self, inputs, y_true):
-        # Output layer's activation function
-        self.activation.forward(inputs)
-
-        # Outputs
-        self.output = self.activation.output
-
-        # Compute and return loss
-        return self.loss.calculate(self.output, y_true)
+    # def __init__(self):
+    #     self.activation = SoftMax()
+    #     self.loss = CategoricalCrossEntropy()
+    #
+    # def forward(self, inputs, y_true):
+    #     # Output layer's activation function
+    #     self.activation.forward(inputs)
+    #
+    #     # Outputs
+    #     self.output = self.activation.output
+    #
+    #     # Compute and return loss
+    #     return self.loss.calculate(self.output, y_true)
 
     def backward(self, dvalues, y_true):
         # Number of samples

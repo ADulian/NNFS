@@ -1,10 +1,14 @@
 from layers import Input
+from losses import CategoricalCrossEntropy, Softmax_CategoricalCrossentropy
+from activations import SoftMax
 import numpy as np
 
 class Model:
     def __init__(self):
         # Create list of network objects
         self.layers = []
+
+        self.softmax_classifier_output = None
 
     def add(self, layer):
         self.layers.append(layer)
@@ -20,7 +24,7 @@ class Model:
 
         for epoch in range(1, epochs+1):
             # Forward pass
-            output = self.forward(X)
+            output = self.forward(X, training=True)
 
             # Loss
             data_loss, regularization_loss = self.loss.calculate(output, y, include_regularization=True)
@@ -51,7 +55,7 @@ class Model:
             X_val, y_val = validation_data
 
             # Forward
-            output = self.forward(X_val)
+            output = self.forward(X_val, training=False)
 
             # Loss
             loss = self.loss.calculate(output, y_val)
@@ -100,19 +104,32 @@ class Model:
         # Update loss object with trainable layers
         self.loss.remember_trainable_layers(self.trainable_layers)
 
-    def forward(self, X):
+        if isinstance(self.layers[-1], SoftMax) and isinstance(self.loss, CategoricalCrossEntropy):
+            self.softmax_classifier_output = Softmax_CategoricalCrossentropy()
+
+    def forward(self, X, training):
 
         # Call forward on input layer to set it's output accordingly
-        self.input_layer.forward(X)
+        self.input_layer.forward(X, training)
 
         # Forward over network's layers
         for layer in self.layers:
-            layer.forward(layer.prev.output)
+            layer.forward(layer.prev.output, training)
 
         # Layer is now the last object from the list, return its output
         return layer.output
 
     def backward(self, output, y):
+        # Softmax classifier
+        if self.softmax_classifier_output is not None:
+            self.softmax_classifier_output.backward(output, y)
+            self.layers[-1].dinputs = self.softmax_classifier_output.dinputs
+
+            for layer in reversed(self.layers[:-1]):
+                layer.backward(layer.next.dinputs)
+
+            return
+
         # First call backward method on the loss
         self.loss.backward(output, y)
 

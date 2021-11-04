@@ -1,7 +1,7 @@
 import numpy as np
 
 class ReLU:
-    def forward(self, inputs):
+    def forward(self, inputs, training):
         self.inputs = inputs
         self.output = np.maximum(0, inputs)
 
@@ -14,7 +14,7 @@ class ReLU:
         return outputs
 
 class SoftMax:
-    def forward(self, inputs):
+    def forward(self, inputs, training):
         self.inputs = inputs
 
         exp_values = np.exp(inputs - np.max(inputs, axis=1, keepdims=True))
@@ -43,7 +43,7 @@ class SoftMax:
         return np.argmax(outputs, axis=1)
 
 class Sigmoid:
-    def forward(self, inputs):
+    def forward(self, inputs, training):
         self.inputs = inputs
         self.output = 1 / (1 + np.exp(-inputs))
 
@@ -54,7 +54,7 @@ class Sigmoid:
         return (outputs > 0.5) * 1
 
 class Linear:
-    def forward(self, inputs):
+    def forward(self, inputs, training):
         self.inputs = inputs
         self.output = inputs
 
