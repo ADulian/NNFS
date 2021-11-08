@@ -10,7 +10,20 @@ class Accuracy:
         # Acc
         acc = np.mean(comparisons)
 
+        # Accumulate
+        self.accumulated_sum += np.sum(comparisons)
+        self.accumulated_count += len(comparisons)
+
         return acc
+
+    def calculate_accumulated(self):
+        acc = self.accumulated_sum / self.accumulated_count
+
+        return acc
+
+    def new_pass(self):
+        self.accumulated_sum = 0
+        self.accumulated_count = 0
 
 class Accuracy_Regression(Accuracy):
     def __init__(self):
