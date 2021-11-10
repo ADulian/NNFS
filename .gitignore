@@ -1,3 +1,5 @@
 .ipynb_checkpoints
 __pycache__/
 fashion_mnist_images
+*.model
+*.parms
