@@ -135,6 +135,27 @@ class Model:
         validation_accuracy = self.accuracy.calculate_accumulated()
         print(f'\nvalidation: ' + f'acc: {validation_accuracy:.3f}, ' + f'loss: {validation_loss:.3f}')
 
+    def predict(self, X, *, batch_size=None):
+        prediction_steps = 1
+
+        if batch_size is not None:
+            prediction_steps = len(X) // batch_size
+            if prediction_steps * batch_size < len(X):
+                prediction_steps += 1
+
+        output = []
+
+        for step in range(prediction_steps):
+            if batch_size is None:
+                batch_X = X
+
+            else:
+                batch_X = X[step*batch_size: (step+1)*batch_size]
+
+            output.append(self.forward(batch_X, training=False))
+
+        return np.vstack(output)
+
     def finalize(self):
         # Create and set the input layer
         self.input_layer = Input()
